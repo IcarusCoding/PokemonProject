@@ -33,6 +33,33 @@ public class BaseSprite : MonoBehaviour
 	private Vector3 BackEulerAngle =  new Vector3(0.0f, 180.0f, 0.0f);
 	private Vector3 RightEulerAngle = new Vector3(0.0f, 270.0f, 0.0f);
 	private Vector3 FaceEulerAngle =  new Vector3(0.0f, 0.0f, 0.0f);
+		
+	private WWW www;
+
+	public IEnumerator UpdateTexture(string aTexPath)
+	{
+		www = new WWW(aTexPath);
+		yield return www;
+
+		size = new Vector2 (1.0f / UVTieX , 1.0f / UVTieY);
+		
+		if(www.error == null)
+		{
+			downloadedTexture = www.texture;
+			
+			texture = downloadedTexture;
+			texture.filterMode = FilterMode.Point;
+			texture.wrapMode = TextureWrapMode.Clamp;
+		}
+		else
+		{
+			Debug.Log("ERROR: " + www.error + " : " + aTexPath);
+
+			texture = defaultTexture;
+			texture.filterMode = FilterMode.Point;
+			texture.wrapMode = TextureWrapMode.Clamp;
+		}
+	}
 
 	/// <summary>
 	/// Lates the update.
@@ -73,8 +100,6 @@ public class BaseSprite : MonoBehaviour
 			renderer.material.SetTextureOffset ("_MainTex", offset);
 			renderer.material.SetTextureScale ("_MainTex", size);
 
-
-			
 			lastIndex = _index;
 		}	
 	}

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class NPCController : BaseController 
 {
+	public string Name { get; set; }
+	public int ID { get; set; }
+
 	private TaskController taskController = null;
 	public GameObject[] destinations;
 

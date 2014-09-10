@@ -4,13 +4,16 @@ using System.Collections;
 [RequireComponent(typeof(Motor))]
 public class BaseController : MonoBehaviour 
 {
+	protected virtual void StartController() {}
+	protected virtual void UpdateController(){}
+
 	protected Motor motor = null;
 	public Dialog Dialog = null;
+	public BaseSprite BaseSprite = null;
 	
 	public void Start()
 	{
 		motor = this.GetComponent<Motor> ();
-
 		StartController ();
 	}
 	
@@ -25,7 +28,4 @@ public class BaseController : MonoBehaviour
 
 		motor.UpdateMotor();
 	}
-
-	protected virtual void StartController() {}
-	protected virtual void UpdateController(){}
 }
