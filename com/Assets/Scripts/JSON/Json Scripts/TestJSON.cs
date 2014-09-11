@@ -17,7 +17,7 @@ public class TestJSON : MonoBehaviour
 	IEnumerator Start()
 	{
 		//Load JSON data from a URL
-		string url = "http://www.millsaj.com/example.json";
+		string url = "https://www.millsaj.com/example.json";
 		WWW www = new WWW(url);
 		
 		//Load the data and yield (wait) till it's ready before we continue executing the rest of this method.
@@ -40,7 +40,7 @@ public class TestJSON : MonoBehaviour
 		NPC npc;
 
 		//Create X number of sprites based on our JSON info
-		for(int x = 0; x < 150; x++)
+		for(int x = 0; x < 500; x++)
 		{
 			for(int i = 0; i<jsonNPC["NPC"].Count; i++)
 			{
