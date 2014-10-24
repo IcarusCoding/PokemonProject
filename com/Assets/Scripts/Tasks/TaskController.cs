@@ -56,17 +56,31 @@ public class TaskController
 	/// </summary>
 	private void AddTasks()
 	{
-		/*for(int x = 3; x > 0; x--)
-		{
-			TasksToComplete.Add (new DialogTask (this.gameObject, (x).ToString(), true));
-		}
-
-		TasksToComplete.Add (new RotationTask(this.gameObject, GameObject.Find("Player").transform));
-		TasksToComplete.Add (new DialogTask (this.gameObject, "Rotation Complete!", true));
-*/
 		TasksToComplete.Add(new DestinationTask(owner, owner.GetComponent<NPCController>().destinations
 		                                        [Random.Range(0, owner.GetComponent<NPCController>().destinations.Length-1)].transform.position));
-		TasksToComplete.Add (new DialogTask (owner, "Destination Complete!", true));
+	}
+
+	public void AddDestinationTask(Vector3 aDestination)
+	{
+		TasksToComplete.Add(new DestinationTask(owner, aDestination));
+	}
+
+	/// <summary>
+	/// Adds a rotation task to our task Controller.
+	/// </summary>
+	/// <param name="aRotation">A rotation.</param>
+	public void AddRotationTask (Vector3 aRotation)
+	{
+		//TODO:: Allow the NPC to rotate only
+	}
+
+	/// <summary>
+	/// Adds a dialog task to our task Controller.
+	/// </summary>
+	/// <param name="aDialog">A dialog to be placed ont he screen.</param>
+	public void AddDialogTask(string aDialog, bool aPostYieldTime)
+	{
+		TasksToComplete.Add (new DialogTask (owner, aDialog, aPostYieldTime));
 	}
 	
 	/// <summary>

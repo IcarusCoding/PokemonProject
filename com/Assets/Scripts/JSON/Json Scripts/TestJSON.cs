@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using LitJson;
 
 public struct NPC
@@ -7,11 +8,24 @@ public struct NPC
 	public string name;
 	public int id;
 	public string image;
-	public ArrayList tasks;
+
+	public List<Event> ListOfEvents;
+}
+
+public struct Event
+{
+	public string dialog;
+	public bool postYieldDialog;
+
+	public Vector3 destination;
+	public Vector3 rotation;
+	
+	public bool yieldNextEvent;
 }
 
 public class TestJSON : MonoBehaviour 
 {
+	//An empty placeholder in which all npc's derive from
 	public GameObject BaseNPC = null;
 
 	IEnumerator Start()
@@ -24,6 +38,7 @@ public class TestJSON : MonoBehaviour
 		yield return www;
 		if (www.error == null)
 		{			
+			Debug.Log("fdsa");
 			//Process npc data found in JSON file
 			ProcessNPC(www.text);
 		}
@@ -38,31 +53,38 @@ public class TestJSON : MonoBehaviour
 	{
 		JsonData jsonNPC = JsonMapper.ToObject(jsonString);
 		NPC npc;
+		Event _event;
 
-		//Create X number of sprites based on our JSON info
-		for(int x = 0; x < 500; x++)
+		for(int i = 0; i<jsonNPC["NPC"].Count; i++)
 		{
-			for(int i = 0; i<jsonNPC["NPC"].Count; i++)
+			npc = new NPC();
+			npc.ListOfEvents = new List<Event>();
+
+			npc.name = jsonNPC["NPC"][i]["name"].ToString();
+			npc.id = System.Convert.ToInt16(jsonNPC["NPC"][i]["id"].ToString());
+			npc.image = jsonNPC["NPC"][i]["image"].ToString();
+
+			for(int o = 0; o<jsonNPC["NPC"][i]["EVENTS"]["event"].Count; o++)
 			{
-				npc = new NPC();
-				npc.id = System.Convert.ToInt16(jsonNPC["NPC"][i]["id"].ToString());
-				npc.image = jsonNPC["NPC"][i]["image"].ToString();
-				npc.tasks = new ArrayList();
-			
-				LoadNPC(npc);
+				_event = new Event();
+				_event.dialog = jsonNPC["NPC"][i]["EVENTS"]["event"][o]["dialog"].ToString();
+				npc.ListOfEvents.Add(_event);
 			}
-		}
+		}	
 	}
 	
 	//Creates an NPC based on the information gained from the JSON Script
-	private void LoadNPC(NPC npc)
+	private void LoadNPC(NPC aNPC, Event aEvent)
 	{
 		GameObject npcGameObject = Instantiate (BaseNPC, new Vector3 (0, 3, 0), Quaternion.identity) as GameObject;
 		NPCController npcScript = npcGameObject.GetComponent<NPCController> ();
 
-		npcScript.Name = npc.name;
-		npcScript.ID = npc.id;
+		npcScript.CreateNPC ();
 
+		npcScript.Name = aNPC.name;
+		npcScript.ID = aNPC.id;
+
+		npcScript.taskController.AddDialogTask (aNPC.ListOfEvents[0].dialog, true);
 		//The texture url is a test dummy atm, once accual design is implemented, please refer to npc.image
 		StartCoroutine(npcScript.BaseSprite.UpdateTexture ("http://millsaj.com/images/NPC/NPC " + System.String.Format("{0:00}", (int)Random.Range(1,19)) + ".png"));
 	}
